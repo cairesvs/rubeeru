@@ -7,11 +7,13 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
+extern crate geojson;
 
 use rocket_contrib::{Json, Value};
 use rocket::State;
 use std::collections::HashMap;
 use std::sync::Mutex;
+use geojson::Geometry;
 
 type ID = String;
 
@@ -21,6 +23,10 @@ type PointOfSaleMap = Mutex<HashMap<ID, PointOfSale>>;
 struct PointOfSale {
     id: ID,
     owner_name: String,
+    trading_name: String,
+    document: String,
+    address: Geometry,
+    coverage_area: Geometry,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -52,6 +58,10 @@ fn get(id: ID, map: State<PointOfSaleMap>) -> Option<Json<PointOfSale>> {
         Json(PointOfSale {
             id: id,
             owner_name: pos.owner_name.clone(),
+            trading_name: pos.trading_name.clone(),
+            document: pos.document.clone(),
+            address: pos.address.clone(),
+            coverage_area: pos.coverage_area.clone(),
         })
     })
 }
